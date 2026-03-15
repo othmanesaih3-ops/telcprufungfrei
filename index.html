@@ -1,0 +1,148 @@
+# telcprufungfrei<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zertify Clone - Lesen Teil 3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .question-card { transition: all 0.3s ease; }
+        .correct { border-color: #10b981 !important; background-color: #ecfdf5 !important; }
+        .wrong { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- Header -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">Z</div>
+            <span class="font-bold text-lg tracking-tight">ZERTIFY <span class="text-blue-600 underline">CLONE</span></span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="bg-amber-50 text-amber-700 px-4 py-1.5 rounded-full border border-amber-200 flex items-center gap-2">
+                <span id="timer" class="font-mono font-bold text-lg">15:00</span>
+            </div>
+            <button onclick="location.reload()" class="p-2 hover:bg-slate-100 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex flex-col md:flex-row h-[calc(100vh-64px)] overflow-hidden">
+        
+        <!-- Left Section: Reading Text -->
+        <section class="w-full md:w-1/2 p-8 overflow-y-auto bg-white border-r border-slate-200 custom-scroll">
+            <div class="max-w-2xl mx-auto">
+                <span class="text-blue-600 font-bold text-sm uppercase tracking-wider">Lesen Teil 3</span>
+                <h2 class="text-3xl font-extrabold mt-2 mb-6 text-slate-800 leading-tight">Arbeitswelt: Anzeigen verstehen</h2>
+                
+                <div class="prose prose-slate text-lg leading-relaxed space-y-4">
+                    <p>Lesen Sie die Anzeigen a bis h aus einer Zeitung. Welche Anzeige passt zu welcher Situation? Für die Situationen 11 bis 17 suchen Sie die passende Anzeige.</p>
+                    <div class="p-6 bg-slate-50 border-l-4 border-blue-600 rounded-r-xl my-6 italic">
+                        "Hier kommt der Haupttext... Sie können diesen Text einfach im Code bearbeiten. Zertify nutzt oft echte Prüfungsfragen."
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Section: Questions -->
+        <section class="w-full md:w-1/2 p-8 overflow-y-auto bg-slate-50 custom-scroll">
+            <div id="quiz-container" class="max-w-xl mx-auto space-y-6 pb-20">
+                
+                <!-- Question 1 -->
+                <div class="question-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200" data-correct="0">
+                    <p class="font-bold text-slate-800 mb-4 text-lg">1. Eine Freundin von Ihnen möchte am Wochenende Deutsch lernen. Welche Anzeige passt?</p>
+                    <div class="grid gap-3">
+                        <button onclick="selectOption(this, 0)" class="option-btn text-left p-4 rounded-xl border border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium">Anzeige A: Wochenendkurs Deutsch</button>
+                        <button onclick="selectOption(this, 1)" class="option-btn text-left p-4 rounded-xl border border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium">Anzeige B: Abendkurs Englisch</button>
+                        <button onclick="selectOption(this, 2)" class="option-btn text-left p-4 rounded-xl border border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium">Anzeige C: Online-Seminar Marketing</button>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200" data-correct="2">
+                    <p class="font-bold text-slate-800 mb-4 text-lg">2. Wer bietet Hilfe bei der Jobsuche an?</p>
+                    <div class="grid gap-3">
+                        <button onclick="selectOption(this, 0)" class="option-btn text-left p-4 rounded-xl border border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium">Anzeige D: Pizzaservice</button>
+                        <button onclick="selectOption(this, 1)" class="option-btn text-left p-4 rounded-xl border border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium">Anzeige E: Fitnesstraining</button>
+                        <button onclick="selectOption(this, 2)" class="option-btn text-left p-4 rounded-xl border border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium">Anzeige F: Bewerbungscoaching</button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button id="submit-btn" onclick="checkAnswers()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-blue-700 transition shadow-lg shadow-blue-100">
+                    Abgeben (Antworten prüfen)
+                </button>
+
+                <!-- Result Area -->
+                <div id="result" class="hidden p-8 bg-slate-900 text-white rounded-2xl text-center shadow-xl">
+                    <p class="text-sm opacity-70 uppercase tracking-widest">Ihr Ergebnis:</p>
+                    <h3 id="score-text" class="text-5xl font-black mt-2">0 / 2</h3>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Timer Logic
+        let time = 900; // 15 mins
+        const timerDisplay = document.getElementById('timer');
+        setInterval(() => {
+            if (time <= 0) return;
+            time--;
+            const mins = Math.floor(time / 60);
+            const secs = time % 60;
+            timerDisplay.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }, 1000);
+
+        // Store User Selection
+        function selectOption(btn, index) {
+            const card = btn.closest('.question-card');
+            if (card.classList.contains('locked')) return;
+            
+            card.querySelectorAll('.option-btn').forEach(b => {
+                b.classList.remove('border-blue-600', 'bg-blue-50', 'ring-2', 'ring-blue-100');
+            });
+            btn.classList.add('border-blue-600', 'bg-blue-50', 'ring-2', 'ring-blue-100');
+            card.dataset.userSelection = index;
+        }
+
+        // Check Answers
+        function checkAnswers() {
+            let score = 0;
+            const cards = document.querySelectorAll('.question-card');
+            
+            cards.forEach(card => {
+                const correct = parseInt(card.dataset.correct);
+                const user = parseInt(card.dataset.userSelection);
+                const options = card.querySelectorAll('.option-btn');
+
+                card.classList.add('locked'); // Lock answers after submit
+
+                if (user === correct) {
+                    score++;
+                    options[user].classList.add('correct');
+                } else if (!isNaN(user)) {
+                    options[user].classList.add('wrong');
+                    options[correct].classList.add('correct');
+                } else {
+                    options[correct].classList.add('correct'); // Show correct even if not answered
+                }
+            });
+
+            // Show Score
+            document.getElementById('submit-btn').classList.add('hidden');
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('score-text').innerText = `${score} / ${cards.length}`;
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
