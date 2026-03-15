@@ -3,223 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zertify Pro - Telc B2 Simulator</title>
+    <title>Zertify Pro Clone - Telc B2</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; }
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .option-selected { border-color: #2563eb !important; background-color: #eff6ff !important; ring: 2px; ring-color: #bfdbfe; }
-        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; }
-        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+        .option-active { border-color: #2563eb !important; background-color: #eff6ff !important; ring: 2px; }
+        .is-correct { background-color: #dcfce7 !important; border-color: #22c55e !important; }
+        .is-wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; }
     </style>
 </head>
-<body class="bg-gray-50 text-slate-900">
+<body class="bg-gray-50 text-slate-900 overflow-hidden">
 
     <div id="app" class="h-screen flex flex-col">
-        <!-- Navigation Header -->
+        <!-- Header -->
         <header class="h-16 bg-white border-b flex items-center justify-between px-6 shrink-0 shadow-sm z-50">
-            <div class="flex items-center gap-4 cursor-pointer" onclick="renderHome()">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="renderHome()">
                 <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg">Z</div>
-                <span class="font-bold text-xl tracking-tighter">ZERTIFY<span class="text-indigo-600 font-black italic">B2</span></span>
+                <span class="font-bold text-xl tracking-tighter">ZERTIFY<span class="text-indigo-600 font-black italic underline">PRO</span></span>
             </div>
             
-            <div id="exam-tools" class="hidden flex items-center gap-4">
-                <div class="bg-amber-50 text-amber-700 px-3 py-1 rounded-lg border border-amber-200 font-mono font-bold" id="timer-display">15:00</div>
-                <button onclick="renderHome()" class="p-2 bg-slate-100 rounded-lg hover:bg-red-50 hover:text-red-600 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <div id="status-bar" class="hidden flex items-center gap-4">
+                <div class="bg-amber-50 text-amber-700 px-4 py-1.5 rounded-full border border-amber-200 font-mono font-bold" id="timer">15:00</div>
+                <button onclick="renderHome()" class="p-2 bg-slate-100 rounded-full hover:bg-red-50 hover:text-red-600 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </button>
             </div>
         </header>
 
-        <!-- Dynamic Content Area -->
+        <!-- Main View Area -->
         <div id="main-view" class="flex-1 overflow-hidden">
-            <!-- Content will be injected here by JS -->
+            <!-- Content will change here -->
         </div>
     </div>
 
     <script>
-        // --- DATA SECTION ---
-        const examData = {
-            "Teil 1": {
-                title: "Teil 1: Limonade 1",
-                instruction: "Finden Sie für jeden Text (1-5) die passende Überschrift (a-j).",
-                leftContent: `
-                    <div class="space-y-8">
-                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                            <h4 class="font-bold text-indigo-600 mb-2">Text 1</h4>
-                            <p>Möchten Sie Kraft, Jugend und Gesundheit aus der Flasche? Dann suchen Sie nach Sauerstoff-Mineralwasser... gehen Sie doch einfach mehr an die frische Luft. Und die ist kostenlos.</p>
-                        </div>
-                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                            <h4 class="font-bold text-indigo-600 mb-2">Text 2</h4>
-                            <p>Wenn es regnet, dann fließt das Regenwasser in den Erdboden... Durch Brunnen kann dann Mineralwasser gewonnen werden. Doch Vorsicht: Nitrat gefährdet die Qualität.</p>
-                        </div>
-                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                            <h4 class="font-bold text-indigo-600 mb-2">Text 3</h4>
-                            <p>Meteorologen sprechen davon, dass sich das Klima weltweit dramatisch verändert. Stabile Sommer mit Sonnenschein sollen am Mittelmeer passé sein.</p>
-                        </div>
-                    </div>
-                `,
+        // --- DATABASE ---
+        // هنا كتحط المعلومات ديالك (الأوديوات، النصوص، والأسئلة)
+        const examDatabase = {
+            "Lesen Teil 1": {
+                type: "lesen",
+                title: "Limonade 1 - Leseverstehen",
+                text: `<div class="prose lg:prose-xl"><h3>Möchten Sie Kraft, Jugend und Gesundheit?</h3><p>Dann suchen Sie nach Sauerstoff-Mineralwasser. Hersteller versprechen magische Kräfte. Doch Forscher halten es für Unsinn. Der Körper nimmt Sauerstoff über die Atmung auf...</p></div>`,
                 questions: [
-                    { id: 0, q: "Welche Überschrift passt zu Text 1?", options: ["a) Limonade aus dem Wasserhahn", "f) Frische Luft macht stark", "e) Viel Wasser trinken"], correct: 1 },
-                    { id: 1, q: "Welche Überschrift passt zu Text 2?", options: ["j) Vom Regen zum Mineralwasser", "i) Alarm: Nitrat im Regenwasser", "b) Limonade ist moderner"], correct: 0 },
-                    { id: 2, q: "Welche Überschrift passt zu Text 3?", options: ["c) Sommer bedeutet nicht unbedingt Sonne", "g) Die Sonne macht Probleme", "d) Mehr Sauerstoff"], correct: 0 }
+                    { q: "Welche Überschrift passt zu Text 1?", options: ["a) Limonade aus dem Hahn", "f) Frische Luft macht stark", "e) Viel Wasser trinken"], correct: 1 }
                 ]
             },
-            "Teil 2": {
-                title: "Teil 2: Parking (Duisburg)",
-                instruction: "Lesen Sie den Artikel und wählen Sie die richtige Antwort (A, B oder C).",
-                leftContent: `
-                    <div class="prose prose-slate lg:prose-lg">
-                        <h2 class="text-indigo-600">Geschichte der Parkuhr</h2>
-                        <p>Es geschah am 1. Januar 1954. In Duisburg gab es für die Autofahrer eine Überraschung. 20 etwa 4,5 Meter hohe Metallstangen standen am Straßenrand mit der Aufschrift: „Einwurf 10 Pfennig für eine Stunde“. Die ersten Parkuhren in Deutschland waren aufgestellt.</p>
-                        <p>Autofahrer nannten sie „Groschengrab“. In den 1980ern kam die Parkuhren-Revolution: Parkscheinautomaten mit Solarenergie ersetzten die alten Uhren.</p>
-                    </div>
-                `,
+            "Hören Teil 1": {
+                type: "hoeren",
+                title: "Hören 1 - Nachrichtensendung",
+                audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // دير رابط الأوديو هنا
+                text: `<div class="flex flex-col items-center justify-center h-64 bg-slate-100 rounded-3xl border-2 border-dashed border-slate-300">
+                        <p class="text-slate-500 font-medium">Hören Sie die Audiospur und lösen Sie die Aufgaben</p>
+                       </div>`,
                 questions: [
-                    { id: 0, q: "6. Die ersten Parkuhren Europas standen...", options: ["A) in Basel und in Duisburg.", "B) in der Schweiz und in Schweden.", "C) in Deutschland und in Schweden."], correct: 1 },
-                    { id: 1, q: "7. Früher wurden in Duisburg die Parkgebühren verwendet, um...", options: ["A) Bedürftige zu unterstützen.", "B) Dauerparker aus der Stadt zu vertreiben.", "C) Löcher im Haushalt zu stopfen."], correct: 0 }
-                ]
-            },
-            "Teil 3": {
-                title: "Teil 3: Theater & Musik",
-                instruction: "Welche Anzeige (A-L) passt zu welcher Situation (11-20)?",
-                leftContent: `
-                    <div class="grid grid-cols-1 gap-4">
-                        <div class="p-4 border rounded-xl bg-blue-50"><b>Anzeige A:</b> Theater Marabu - In Pollekes elfjährigem Leben scheint im Augenblick etwas falsch zu laufen... (ab 9 Jahren)</div>
-                        <div class="p-4 border rounded-xl bg-emerald-50"><b>Anzeige B:</b> Rasmus und der Landstreicher - Nach dem Kinderbuch von Astrid Lindgren (ab 5 Jahren)</div>
-                        <div class="p-4 border rounded-xl bg-amber-50"><b>Anzeige E:</b> Beethovens Bonn - Erblickte Ludwig van Beethoven das Licht der Welt... Biographien.</div>
-                    </div>
-                `,
-                questions: [
-                    { id: 0, q: "11) Ihre Schwester interessiert sich für die Biographien großer Musiker.", options: ["Anzeige E", "Anzeige A", "Anzeige B", "X (Keine Lösung)"], correct: 0 },
-                    { id: 1, q: "12) Sie möchten mit Ihrer zwölfjährigen Tochter ein Theaterstück besuchen.", options: ["Anzeige A", "Anzeige B", "Anzeige E", "X (Keine Lösung)"], correct: 0 }
+                    { q: "41. Die Deutsche Lufthansa hat ihre Führungsposition verloren.", options: ["Richtig", "Falsch"], correct: 1 },
+                    { q: "42. Ein Bonner Sportverein zeigt sein Angebot.", options: ["Richtig", "Falsch"], correct: 0 }
                 ]
             }
         };
 
-        // --- APP LOGIC ---
         let userAnswers = {};
-        let isSubmitted = false;
+        let locked = false;
 
+        // --- NAVIGATION ---
         function renderHome() {
-            isSubmitted = false;
-            userAnswers = {};
-            document.getElementById('exam-tools').classList.add('hidden');
+            locked = false;
+            document.getElementById('status-bar').classList.add('hidden');
             document.getElementById('main-view').innerHTML = `
-                <main class="max-w-5xl mx-auto p-8 h-full overflow-y-auto custom-scroll">
-                    <div class="text-center py-12">
-                        <h1 class="text-5xl font-black text-slate-900 mb-4 tracking-tight">Vorbereitung Telc B2</h1>
-                        <p class="text-slate-500 text-lg">Wählen Sie einen Prüfungsteil zum Üben</p>
-                    </div>
-                    <div class="grid md:grid-cols-3 gap-8">
-                        ${['Teil 1', 'Teil 2', 'Teil 3'].map((part, i) => `
-                            <div onclick="loadExam('${part}')" class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl hover:-translate-y-2 transition-all cursor-pointer group">
-                                <div class="w-16 h-16 ${i==0?'bg-blue-100 text-blue-600':i==1?'bg-emerald-100 text-emerald-600':'bg-purple-100 text-purple-600'} rounded-2xl flex items-center justify-center text-3xl font-black mb-6 group-hover:scale-110 transition-transform">${i+1}</div>
-                                <h3 class="font-bold text-2xl mb-2">Lesen ${part}</h3>
-                                <p class="text-slate-400 text-sm">Üben Sie mit den echten Inhalten aus Ihren PDF-Dateien.</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </main>
-            `;
-        }
-
-        function loadExam(partName) {
-            const data = examData[partName];
-            document.getElementById('exam-tools').classList.remove('hidden');
-            
-            document.getElementById('main-view').innerHTML = `
-                <div class="flex flex-col md:flex-row h-full">
-                    <div class="w-full md:w-1/2 p-8 overflow-y-auto bg-white border-r custom-scroll">
-                        <span class="text-indigo-600 font-bold uppercase text-xs tracking-widest">${partName}</span>
-                        <h2 class="text-3xl font-black mt-2 mb-6">${data.title}</h2>
-                        <div class="text-slate-700 leading-relaxed">${data.leftContent}</div>
-                    </div>
-                    <div class="w-full md:w-1/2 p-8 overflow-y-auto bg-slate-50 custom-scroll">
-                        <div class="max-w-xl mx-auto space-y-6 pb-24">
-                            <p class="bg-indigo-50 text-indigo-700 p-4 rounded-xl border border-indigo-100 text-sm font-semibold">${data.instruction}</p>
-                            <div id="questions-list" class="space-y-6">
-                                ${data.questions.map((q, idx) => `
-                                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200" id="card-${idx}">
-                                        <p class="font-bold text-lg mb-4">${q.q}</p>
-                                        <div class="grid gap-2">
-                                            ${q.options.map((opt, optIdx) => `
-                                                <button onclick="selectOption(${idx}, ${optIdx})" id="opt-${idx}-${optIdx}" class="option-btn text-left p-4 rounded-xl border-2 border-slate-100 hover:border-indigo-200 transition-all font-medium">
-                                                    ${opt}
-                                                </button>
-                                            `).join('')}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <button onclick="submitExam('${partName}')" id="submit-btn" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-black text-xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all">Abgeben</button>
-                            <div id="final-result" class="hidden p-8 bg-slate-900 text-white rounded-3xl text-center">
-                                <p class="text-slate-400 text-sm uppercase tracking-widest mb-2 font-bold">Dein Ergebnis</p>
-                                <h3 id="score-text" class="text-5xl font-black">0 / 0</h3>
-                                <button onclick="renderHome()" class="mt-6 text-indigo-400 font-bold underline">Zurück zum Menü</button>
-                            </div>
+                <div class="max-w-5xl mx-auto p-10 h-full overflow-y-auto custom-scroll">
+                    <h1 class="text-5xl font-black text-center mb-4">Vorbereitung Telc B2</h1>
+                    <p class="text-center text-slate-500 text-lg mb-12">اختر الاختبار لبدء التدريب</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div onclick="startExam('Lesen Teil 1')" class="bg-white p-8 rounded-[2.5rem] shadow-xl hover:-translate-y-2 transition-all cursor-pointer border border-slate-100 group">
+                            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl font-black mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">L</div>
+                            <h2 class="text-2xl font-black">Lesen Teil 1</h2>
+                            <p class="text-slate-400 mt-2">Limonade, Schlafzug...</p>
+                        </div>
+                        
+                        <div onclick="startExam('Hören Teil 1')" class="bg-white p-8 rounded-[2.5rem] shadow-xl hover:-translate-y-2 transition-all cursor-pointer border border-slate-100 group">
+                            <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl font-black mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors">H</div>
+                            <h2 class="text-2xl font-black">Hören Teil 1</h2>
+                            <p class="text-slate-400 mt-2">Lufthansa, Erdbeben...</p>
                         </div>
                     </div>
                 </div>
             `;
         }
 
-        function selectOption(qIdx, optIdx) {
-            if (isSubmitted) return;
-            // Clear other selections in this question
-            const parent = document.getElementById(`card-${qIdx}`);
-            parent.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('option-selected'));
-            // Select this one
-            document.getElementById(`opt-${qIdx}-${optIdx}`).classList.add('option-selected');
-            userAnswers[qIdx] = optIdx;
+        function startExam(part) {
+            const data = examDatabase[part];
+            userAnswers = {};
+            document.getElementById('status-bar').classList.remove('hidden');
+            
+            let audioHtml = data.type === 'hoeren' ? `
+                <div class="mb-6 p-4 bg-indigo-600 rounded-2xl shadow-lg">
+                    <p class="text-white text-sm font-bold mb-2 uppercase tracking-widest">Audio Player</p>
+                    <audio controls class="w-full h-10">
+                        <source src="${data.audioUrl}" type="audio/mpeg">
+                    </audio>
+                </div>
+            ` : '';
+
+            document.getElementById('main-view').innerHTML = `
+                <div class="flex flex-col md:flex-row h-full">
+                    <!-- Left Column -->
+                    <div class="w-full md:w-1/2 p-8 bg-white border-r overflow-y-auto custom-scroll">
+                        ${audioHtml}
+                        <h1 class="text-3xl font-black mb-6">${data.title}</h1>
+                        <div class="text-slate-700 text-lg leading-relaxed">${data.text}</div>
+                    </div>
+                    <!-- Right Column -->
+                    <div class="w-full md:w-1/2 p-8 bg-slate-50 overflow-y-auto custom-scroll">
+                        <div id="quiz-area" class="max-w-xl mx-auto space-y-6 pb-24">
+                            ${data.questions.map((q, qIdx) => `
+                                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm" id="card-${qIdx}">
+                                    <p class="font-bold text-lg mb-4">${qIdx + 41}. ${q.q}</p>
+                                    <div class="grid gap-2">
+                                        ${q.options.map((opt, oIdx) => `
+                                            <button onclick="pick(${qIdx}, ${oIdx}, this)" class="opt-btn text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-indigo-200 transition-all font-medium bg-slate-50">
+                                                ${opt}
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                            <button onclick="finish('${part}')" id="finish-btn" class="w-full bg-indigo-600 text-white py-5 rounded-3xl font-black text-xl shadow-lg hover:bg-indigo-700 transition-all">Abgeben (Fertig)</button>
+                            <div id="result-display" class="hidden p-10 bg-slate-900 text-white rounded-[2.5rem] text-center"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function submitExam(partName) {
-            if (isSubmitted) return;
-            const data = examData[partName];
+        function pick(qIdx, oIdx, btn) {
+            if (locked) return;
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('option-active'));
+            btn.classList.add('option-active');
+            userAnswers[qIdx] = oIdx;
+        }
+
+        function finish(part) {
+            if (locked) return;
+            locked = true;
+            const data = examDatabase[part];
             let score = 0;
 
             data.questions.forEach((q, idx) => {
+                const buttons = document.querySelectorAll(`#card-${idx} .opt-btn`);
                 const correctIdx = q.correct;
                 const userIdx = userAnswers[idx];
 
-                // Remove selection style
-                document.querySelectorAll(`#card-${idx} .option-btn`).forEach(btn => btn.classList.remove('option-selected'));
-
-                if (userIdx === correctIdx) {
-                    score++;
-                    document.getElementById(`opt-${idx}-${userIdx}`).classList.add('correct');
-                } else {
-                    if (userIdx !== undefined) {
-                        document.getElementById(`opt-${idx}-${userIdx}`).classList.add('wrong');
-                    }
-                    document.getElementById(`opt-${idx}-${correctIdx}`).classList.add('correct');
+                buttons[correctIdx].classList.add('is-correct');
+                if (userIdx !== undefined && userIdx !== correctIdx) {
+                    buttons[userIdx].classList.add('is-wrong');
                 }
+                if (userIdx === correctIdx) score++;
             });
 
-            isSubmitted = true;
-            document.getElementById('submit-btn').classList.add('hidden');
-            const resultBox = document.getElementById('final-result');
-            resultBox.classList.remove('hidden');
-            document.getElementById('score-text').innerText = `${score} / ${data.questions.length}`;
-            resultBox.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('finish-btn').classList.add('hidden');
+            const res = document.getElementById('result-display');
+            res.classList.remove('hidden');
+            res.innerHTML = `
+                <p class="text-slate-400 uppercase tracking-widest font-bold text-sm mb-2">Ergebnis</p>
+                <h2 class="text-6xl font-black">${score} / ${data.questions.length}</h2>
+                <button onclick="renderHome()" class="mt-8 text-indigo-400 font-bold underline">Zurück zum Start</button>
+            `;
+            res.scrollIntoView({ behavior: 'smooth' });
         }
 
         // Timer
-        let timeLeft = 900;
+        let s = 900;
         setInterval(() => {
-            if (timeLeft > 0) {
-                timeLeft--;
-                const m = Math.floor(timeLeft / 60);
-                const s = timeLeft % 60;
-                const display = document.getElementById('timer-display');
-                if(display) display.innerText = `${m}:${s < 10 ? '0' + s : s}`;
+            if (s > 0) {
+                s--;
+                let m = Math.floor(s/60);
+                let sec = s%60;
+                const tEl = document.getElementById('timer');
+                if(tEl) tEl.innerText = `${m}:${sec < 10 ? '0' + sec : sec}`;
             }
         }, 1000);
 
-        // Start at Home
+        // Start App
         renderHome();
     </script>
 </body>
